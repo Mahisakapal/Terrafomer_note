@@ -1,0 +1,106 @@
+Terraformer: This is the tool to create tf file from our existing resources,
+
+Requirements: we should know OS Type, Terraform should be install Or you can install it.
+
+Installation: 
+1)	Go to this link and download binary as per your OS. https://github.com/GoogleCloudPlatform/terraformer/releases
+2)	Change the permission of file by chmod and add executive permission
+chmod +x terraformer-AWS-linux-amd64 
+3)	Than move to local bin and verfy it my give cmd terraformer –version or help 
+sudo mv    terraformer-AWS-linux-amd64  /user/local/bin/terraformer 
+
+terraformer –version or terraformer –help 
+
+4)	Copy the provider binary in your working dir ./terraformer.d/plugging/aws/ from below link 
+Go and find latest version inside that folder find appropriate zip for your system   copy link and do wget
+
+Wget https://releases.hashicorp.com/terraform-provider-aws/3.70.0/terraform-provider-aws_3.70.0_linux_amd64.zip
+mv terraform-provider-aws_3.70.0_linux_amd64.zip   ~/.terraform.d/plugins/ linux _amd64/
+or 
+mv terraform-provider-aws_3.70.0_linux_amd64.zip   /home/ubuntu/.terraform.d/plugins/ linux _amd64/
+if this is showing error after creating provider.tf and version.tf do terraform init and download binary from below path and copy in   /home/ubuntu/.terraform.d/plugins/ 
+
+cd .terraform/providers/registry.terraform.io/hashicorp/aws/3.70.0/linux_amd64
+
+or we can use this script also 
+export PROVIDER=aws
+export PROVIDER_VERSION=3.33.0
+export OS=linux
+
+# Install terraformer
+curl -LO https://github.com/GoogleCloudPlatform/terraformer/releases/download/$(curl -s https://api.github.com/repos/GoogleCloudPlatform/terraformer/releases/latest | grep tag_name | cut -d '"' -f 4)/terraformer-${PROVIDER}-${OS}-amd64
+chmod +x terraformer-${PROVIDER}-${OS}-amd64
+sudo mv terraformer-${PROVIDER}-${OS}-amd64 /usr/local/bin/terraformer
+
+# Install AWS provider
+mkdir -p ~/.terraform.d/plugins/${OS}_amd64
+curl -L https://releases.hashicorp.com/terraform-provider-aws/${PROVIDER_VERSION}/terraform-provider-aws_${PROVIDER_VERSION}_${OS}_amd64.zip -o terraform-provider-aws.zip
+unzip terraform-provider-aws.zip
+mv terraform-provider-aws_v${PROVIDER_VERSION}* ~/.terraform.d/plugins/${OS}_amd64/
+
+After this create provider.tf in your local dir
+
+provider "aws" {
+  access_key = "AKIAtestESNADATY4V"
+  secret_key = "JFkgaQLtestXZeJ1Te3hY2tx+vMhrViSrClgu"
+  region = "ap-south-1"                                                           
+}
+ 
+After this create version.tf 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+
+Make sure you have download aws cli and pass the secret key by below cmd 
+aws configure    
+Now do terraform init
+Now it will download your provider binary in below folder 
+cd .terraform/providers/registry.terraform.io/hashicorp/aws/3.70.0/linux_amd64
+same binary you can put in this folder /home/ubuntu/.terraform.d/plugins/
+
+Now we are doing plan to generate plan than we will import it in .it 
+
+terraformer plan aws  --output hcl   --resources="*"  --regions=ap-south-1 
+or
+terraformer plan aws  --output json   --resources="*"  --regions=ap-south-1 
+
+In below cmd we are passing “*” means all resources but we can pass particular resource also like ec2, vpc.
+Now it will create generated folder 
+Inside that we have one plan.json we have import json file and create tf file. Like below 
+
+terraformer import plan  generated/aws/terraformer/plan.json	
+
+now it will garnet all resource .tf file inside very folder in below folder 
+generated/aws/
+
+All reference link :
+https://www.youtube.com/watch?v=GpjCF4yZU9A
+https://github.com/ned1313/terraform-tuesdays/blob/main/2021-03-01-Terraformer/commands.sh#L2
+
+https://github.com/GoogleCloudPlatform/terraformer/blob/master/docs/aws.md
+
+https://gist.github.com/Amet13/dd73d954b8a88abbfefaacd7a7ef03d4#file-terraformer_install-sh
+
+https://faun.pub/terraformer-5036241f90cc
+
+https://releases.hashicorp.com/terraform-provider-aws/
+
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+
+ 
+
+
+
+
+
+
+
+
+
