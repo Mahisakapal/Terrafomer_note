@@ -14,3 +14,7 @@ eksctl create cluster \
 --nodes-max 5 \
 --ssh-public-key testnew \
 --managed
+
+aws sts get-caller-identity
+
+aws eks --region ap-south-1 update-kubeconfig --name myk8s
