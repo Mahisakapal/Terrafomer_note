@@ -10,7 +10,7 @@ eksctl create cluster \
 --node-type t2.micro \
 --with-oidc \
 --ssh-access \
---nodes-min=2
---nodes-max=5
+--nodes-min 2 \
+--nodes-max 5 \
 --ssh-public-key testnew \
 --managed
