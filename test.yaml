@@ -1,0 +1,3 @@
+export kubever=$(kubectl version | base64 | tr -d '\n')
+
+ubuntu@ip-172-31-39-7:~$ kubectl apply -f "https://cloud.weave.works/k8s/net?k8sversion=$kubever" 
